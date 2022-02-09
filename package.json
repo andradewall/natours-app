@@ -1,0 +1,15 @@
+{
+  "name": "natours-app",
+  "version": "1.0.0",
+  "description": "Learning Node, Express and MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "author": "Wallace Andrade",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2",
+    "morgan": "^1.10.0"
+  }
+}
