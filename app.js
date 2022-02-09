@@ -10,7 +10,7 @@ const app = express();
 // 1) COMMON MIDDLEWARES
 // ---------------------
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+  app.use(morgan('dev'));
 }
 
 app.use(express.json());
