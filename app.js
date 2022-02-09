@@ -10,8 +10,8 @@ const app = express();
 // 1) COMMON MIDDLEWARES
 // ---------------------
 app.use(morgan('dev'));
-
 app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
 
 // ---------------------
 // 2) ROUTES MIDDLEWARES
