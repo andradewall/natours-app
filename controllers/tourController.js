@@ -26,44 +26,60 @@ exports.checkBody = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours
-    }
-  });
-};
+exports.getAllTours = async (req, res) => {
+  try {
 
-exports.getTour = (req, res) => {
-  // Multiply to parse to int
-  const id = req.params.id * 1;
-  const tour = tours.find((el) => el.id === id);
+    const tours = await Tour.find()
 
-  res.status(200).json({
-    status: 'success',
-    data: { tour }
-  });
-};
+    res.status(200).json({
+      status: 'success',
+      results: tours.length,
+      data: {
+        tours
+      }
+    })
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err
+    })
+  }
+}
+
+exports.getTour = async (req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id)
+    // As reference: Tour.findOne({ __id: req.params.id })
+
+    res.status(200).json({
+      status: 'success',
+      data: { tour }
+    })
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Tour not found'
+    })
+  }
+}
 
 exports.createTour = async (req, res) => {
   try {
-    const newTour = await Tour.create(req.body);
+    const newTour = await Tour.create(req.body)
 
     res.status(201).json({
       status: 'success',
       data: {
         tour: newTour
       }
-    });
+    })
   } catch (err) {
     res.status(400).json({
       status: 'fail',
       message: 'Invalid data sent!'
-    });
+    })
   }
-};
+}
 
 exports.updateTour = (req, res) => {
   res.status(200).json({
