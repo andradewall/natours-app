@@ -47,10 +47,11 @@ exports.getAllTours = async (req, res) => {
     // Tour.find returns a Query obj
     let query = Tour.find(JSON.parse(queryStr))
 
+    // Now query is a Query obj, so we can chain it
+
     // 2) Sorting
     if (req.query.sort) {
       const sortBy = req.query.sort.split(',').join(' ')
-      // We can chain query because its a Query obj
       query = query.sort(sortBy)
     } else {
       query = query.sort('-createdAt')
@@ -64,8 +65,21 @@ exports.getAllTours = async (req, res) => {
       query = query.select('-__v')
     }
 
+    // 4) Pagination
+    const page = req.query.page * 1 || 1
+    const limit = req.query.limit * 1 || 100
+    const skip = (page - 1) * limit
+
+    query = query.skip(skip).limit(limit)
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments()
+      if (skip >= numTours) throw new Error('This page does not exist')
+    }
+
     // EXECUTE QUERY
     const tours = await query;
+    // query = Tour.find().sort().select().skip().limit()
 
     res.status(200).json({
       status: 'success',
