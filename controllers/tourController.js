@@ -1,28 +1,10 @@
 const fs = require('fs')
 const Tour = require('./../models/tourModel')
 
-// Get data from file
-// const tours = JSON.parse(
-//   fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`)
-// );
-
-// exports.checkID = (req, res, next, val) => {
-//   if (val * 1 > tours.length) {
-//     return res.status(404).json({
-//       status: 'fail',
-//       message: 'Invalid ID',
-//     });
-//   }
-//   next();
-// };
-
-exports.checkBody = (req, res, next) => {
-  if (!req.body.price || !req.body.name) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'Missing name or price'
-    });
-  }
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = '5'
+  req.query.sort = '-ratingsAverage,price'
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty'
   next()
 }
 
