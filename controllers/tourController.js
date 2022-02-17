@@ -28,15 +28,19 @@ exports.checkBody = (req, res, next) => {
 
 exports.getAllTours = async (req, res) => {
   try {
-
     // Build query
-    const queryObj = {...req.query}
+    const queryObj = { ...req.query }
     const excludedFields = ['page', 'sort', 'limit', 'fields']
-    excludedFields.forEach((el) => {
-      delete queryObj[el]
-    })
+    excludedFields.forEach(el => delete queryObj[el])
 
-    const query = Tour.find(queryObj)
+    let queryStr = JSON.stringify(queryObj)
+    // Replace the matched string with the string with $ in the beginning
+    // RegEx:
+    // match exactly (\b)
+    // gte or gt or lte or lt
+    // multiple match (/g)
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+    const query = Tour.find(JSON.parse(queryStr))
 
     // Execute query
     const tours = await query;
