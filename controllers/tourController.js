@@ -28,11 +28,14 @@ exports.checkBody = (req, res, next) => {
 
 exports.getAllTours = async (req, res) => {
   try {
-    // Build query
+    // BUILD QUERY
+
+    // 1a) Filtering
     const queryObj = { ...req.query }
     const excludedFields = ['page', 'sort', 'limit', 'fields']
     excludedFields.forEach(el => delete queryObj[el])
 
+    // 1b) Advanced filtering
     let queryStr = JSON.stringify(queryObj)
     // Replace the matched string with the string with $ in the beginning
     // RegEx:
@@ -40,9 +43,28 @@ exports.getAllTours = async (req, res) => {
     // gte or gt or lte or lt
     // multiple match (/g)
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-    const query = Tour.find(JSON.parse(queryStr))
 
-    // Execute query
+    // Tour.find returns a Query obj
+    let query = Tour.find(JSON.parse(queryStr))
+
+    // 2) Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ')
+      // We can chain query because its a Query obj
+      query = query.sort(sortBy)
+    } else {
+      query = query.sort('-createdAt')
+    }
+
+    // 3) Field limiting
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ')
+      query = query.select(fields)
+    } else {
+      query = query.select('-__v')
+    }
+
+    // EXECUTE QUERY
     const tours = await query;
 
     res.status(200).json({
