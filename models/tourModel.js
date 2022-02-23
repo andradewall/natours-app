@@ -52,6 +52,19 @@ const tourSchema = new mongoose.Schema({
     select: false
   },
   startDates: [Date]
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+})
+
+// Everytime the DB receives a get,
+// the durationWeeks will be created virtually
+// We use the regular function because
+// we need the "this" keyword, so:
+// In short, with arrow functions there are no binding of this.
+// In regular functions the this keyword represented the object that called the function (the Schema = document)
+tourSchema.virtual('durationWeeks').get(function() {
+  return this.duration / 7
 })
 
 const Tour = mongoose.model('Tour', tourSchema)
