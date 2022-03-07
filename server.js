@@ -1,5 +1,11 @@
 const mongoose = require('mongoose')
 
+process.on('uncaughtException', err => {
+  console.log('[server.js] ⚠️  Uncaught Exception! Shutting down...')
+  console.error(err.name, err.message)
+  process.exit(1)
+})
+
 require('dotenv').config({ path: './config.env' })
 
 const app = require('./app')
@@ -24,8 +30,8 @@ const server = app.listen(port, () => {
 });
 
 process.on('unhandledRejection', err => {
-  console.error(err.name, err.message)
   console.log('[server.js] ⚠️  Unhandled Rejection! Shutting down...')
+  console.error(err.name, err.message)
 
   // Finish all pending requests before kill
   server.close(() => {
