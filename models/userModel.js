@@ -50,6 +50,7 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date
 })
 
+// Encrypting password and deleting passwordConfirm from db
 userSchema.pre('save', async function(next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next()
@@ -63,6 +64,7 @@ userSchema.pre('save', async function(next) {
   next()
 })
 
+// Inserting passwordChangedAt
 userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next()
 
