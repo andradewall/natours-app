@@ -9,7 +9,11 @@ const router = express.Router()
 
 router
   .route('/top-5-cheap')
-  .get(authController.protect, tourController.aliasTopTours, tourController.getAllTours)
+  .get(
+    authController.protect,
+    tourController.aliasTopTours,
+    tourController.getAllTours
+  )
 
 router
   .route('/tour-stats')
@@ -27,6 +31,10 @@ router
   .route('/:id')
   .get(authController.protect, tourController.getTour)
   .patch(authController.protect, tourController.updateTour)
-  .delete(authController.protect, tourController.deleteTour)
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin', 'lead-guide'),
+    tourController.deleteTour
+  )
 
 module.exports = router
