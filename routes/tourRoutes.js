@@ -8,9 +8,6 @@ const reviewRouter = require('./reviewRoutes')
 
 router.use('/:tourId/reviews', reviewRouter)
 
-// Applying param middleware only on tours routes
-// router.param('id', tourController.checkID)
-
 router
   .route('/top-5-cheap')
   .get(
