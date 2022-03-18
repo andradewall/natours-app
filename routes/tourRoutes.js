@@ -1,8 +1,12 @@
 const express = require('express')
+const router = express.Router()
+
 const tourController = require('./../controllers/tourController')
 const authController = require('./../controllers/authController')
 
-const router = express.Router()
+const reviewRouter = require('./reviewRoutes')
+
+router.use('/:tourId/reviews', reviewRouter)
 
 // Applying param middleware only on tours routes
 // router.param('id', tourController.checkID)
