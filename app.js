@@ -31,7 +31,7 @@ const oneHour = 60 * 60 * 1000
 const limiter = rateLimit({
   max: 100,
   windowMs: oneHour,
-  message: 'Too many requests from this IP, please try again in an hour'
+  message: 'Too many requests from this IP, please try again in an hour',
 })
 app.use('/api', limiter)
 
@@ -45,16 +45,18 @@ app.use(mongoSanitize())
 app.use(xss())
 
 // Prevent parameter pollution
-app.use(hpp({
-  whitelist: [
-    'price',
-    'duration',
-    'difficulty',
-    'maxGroupSize',
-    'ratingsAverage',
-    'ratingsQuantity'
-  ]
-}))
+app.use(
+  hpp({
+    whitelist: [
+      'price',
+      'duration',
+      'difficulty',
+      'maxGroupSize',
+      'ratingsAverage',
+      'ratingsQuantity',
+    ],
+  })
+)
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`))
@@ -86,4 +88,4 @@ app.use(globalErrorHandler)
 // ---------
 // 3) SERVER
 // ---------
-module.exports = app;
+module.exports = app

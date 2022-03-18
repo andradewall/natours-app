@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'A user must have a name'],
-    trim: true
+    trim: true,
   },
   email: {
     type: String,
@@ -15,35 +15,35 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    validate: [validator.isEmail, 'Please provide a valid email']
+    validate: [validator.isEmail, 'Please provide a valid email'],
   },
   photo: {
     type: String,
-    trim: true
+    trim: true,
   },
   role: {
     type: String,
     enum: ['user', 'guide', 'lead-guide', 'admin'],
     required: true,
-    default: 'user'
+    default: 'user',
   },
   password: {
     type: String,
     required: [true, 'A user must have a password'],
     minlength: 8,
     trim: true,
-    select: false
+    select: false,
   },
   passwordConfirm: {
     type: String,
     required: [true, 'A user must have a password confirm'],
     trim: true,
     validate: {
-      validator: function(val) {
+      validator: function (val) {
         return val === this.password
       },
-      message: 'Passwords are not the same'
-    }
+      message: 'Passwords are not the same',
+    },
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
@@ -51,12 +51,12 @@ const userSchema = new mongoose.Schema({
   active: {
     type: Boolean,
     default: true,
-    select: false
-  }
+    select: false,
+  },
 })
 
 // Encrypting password and deleting passwordConfirm from db
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next()
 
@@ -70,7 +70,7 @@ userSchema.pre('save', async function(next) {
 })
 
 // Inserting passwordChangedAt
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   if (!this.isModified('password') || this.isNew) return next()
 
   this.passwordChangedAt = Date.now() - 1000
@@ -79,7 +79,7 @@ userSchema.pre('save', function(next) {
 })
 
 // Remove inactives users from find queries
-userSchema.pre(/^find/, function(next) {
+userSchema.pre(/^find/, function (next) {
   // this keyword points to the current query
   this.find({ active: { $ne: false } })
 
@@ -87,11 +87,14 @@ userSchema.pre(/^find/, function(next) {
 })
 
 // Create a new method available on the doc
-userSchema.methods.isCorrectPassword = async function(candidatePassword, userPassword) {
+userSchema.methods.isCorrectPassword = async function (
+  candidatePassword,
+  userPassword
+) {
   return await bcrypt.compare(candidatePassword, userPassword)
 }
 
-userSchema.methods.changedPasswordAfterToken = function(jwtTimestamp) {
+userSchema.methods.changedPasswordAfterToken = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = parseInt(
       this.passwordChangedAt.getTime() / 1000,
@@ -102,10 +105,10 @@ userSchema.methods.changedPasswordAfterToken = function(jwtTimestamp) {
   }
 
   // False means password NOT changed
-  return false;
+  return false
 }
 
-userSchema.methods.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex')
 
   this.passwordResetToken = crypto

@@ -12,20 +12,16 @@ exports.deleteOne = Model =>
 
     res.status(204).json({
       status: 'success',
-      data: null
+      data: null,
     })
   })
 
 exports.updateOne = Model =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      {
-        new: true, // Returns the doc after update was applied
-        runValidators: true // Runs fields validators
-      }
-    )
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // Returns the doc after update was applied
+      runValidators: true, // Runs fields validators
+    })
 
     if (!doc) {
       return next(new AppError('No document found with that ID', 404))
@@ -33,7 +29,7 @@ exports.updateOne = Model =>
 
     res.status(200).json({
       status: 'success',
-      data: { data: doc }
+      data: { data: doc },
     })
   })
 
@@ -43,7 +39,7 @@ exports.createOne = Model =>
 
     res.status(201).json({
       status: 'success',
-      data: { data: newDoc }
+      data: { data: newDoc },
     })
   })
 
@@ -61,7 +57,7 @@ exports.getOne = (Model, populateOptions) =>
 
     res.status(200).json({
       status: 'success',
-      data: { data: doc }
+      data: { data: doc },
     })
   })
 
@@ -76,11 +72,11 @@ exports.getAll = Model =>
       .sort()
       .limitFields()
       .paginate()
-    const doc = await features.query;
+    const doc = await features.query
 
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: { data: doc }
+      data: { data: doc },
     })
   })

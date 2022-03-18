@@ -59,8 +59,8 @@ class APIFeatures {
 
     this.query = this.query.skip(skip).limit(limit)
 
-    return this;
+    return this
   }
 }
 
-module.exports = APIFeatures;
+module.exports = APIFeatures
